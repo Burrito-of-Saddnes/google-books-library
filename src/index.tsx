@@ -1,13 +1,27 @@
+import { Provider } from 'mobx-react';
+import { BrowserRouter } from 'react-router-dom';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import { RootStore } from './stores/RootStore';
+
+import './CSS/index.css';
+import App from './Components/App';
+
+declare global {
+  interface Window { rootState: any; }
+}
+
+const ROOT_STORE_INSTANCE = window.rootState = new RootStore()
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider {...ROOT_STORE_INSTANCE}>
+    <BrowserRouter>
+      <App/>
+    </BrowserRouter>
+  </Provider>,
   document.getElementById('root')
 );
 
