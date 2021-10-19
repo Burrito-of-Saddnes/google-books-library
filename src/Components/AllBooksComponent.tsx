@@ -3,15 +3,18 @@ import { inject, observer } from 'mobx-react';
 import axios from 'axios';  
 
 import DisplayMoreButtonStatusStore from "../stores/DisplayMoreButtonStatusStore";
+import { DisplayMoreButtonStatus } from "../utils/displayMoreButtonStatus";
+import LoadingStatusStore from "../stores/LoadingStatusStore";
+import { LoadingStatus } from "../utils/loadingStatus";
 
 import SearchBoxComponent from "./SearchBoxComponent";
 import BookBodyComponent from "./BookBodyComponent";
-import { DisplayMoreButtonStatus } from "../utils/displayMoreButtonStatus";
+import Loading from "./Loading";
 
 interface BookItems { 
     volumeInfo: { 
         imageLinks: { 
-            thumbnail: string; 
+            thumbnail: string;
         };
         previewLink: string; 
         title: string; 
@@ -23,10 +26,11 @@ interface BookItems {
 
 interface AllBooksComponentProps {
     displayMoreButtonStatusStore?: DisplayMoreButtonStatusStore;
+    loadingStatusStore?: LoadingStatusStore;
     bookRes?: Array<BookItems>;
 }
 
-const AllBooksComponent = inject("displayMoreButtonStatusStore")(observer((props:AllBooksComponentProps) => {  
+const AllBooksComponent = inject("displayMoreButtonStatusStore", "loadingStatusStore")(observer((props:AllBooksComponentProps) => {  
     const [book, setBook] = useState("");  
     const [result, setResult] = useState([]);  
     const apiKey ="AIzaSyCfaJ5T7gi_odqHGnJHAIjMSK1HjWJn7_Q";
@@ -34,7 +38,7 @@ const AllBooksComponent = inject("displayMoreButtonStatusStore")(observer((props
     const [orderBy, setOrderBy] = useState("RELEVANCE");
     const maxResult = 20;
     const startIndex = 0;
-    const { displayMoreButtonStatusStore } = props;
+    const { displayMoreButtonStatusStore, loadingStatusStore } = props;
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {  
         const book = event.target.value;  
@@ -51,9 +55,10 @@ const AllBooksComponent = inject("displayMoreButtonStatusStore")(observer((props
         setSubject(subject);
     }
 
-    function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) {  
+    async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) { 
         event.preventDefault();
-        axios.get(
+        loadingStatusStore?.triggerActive(); 
+        await axios.get(
             "https://www.googleapis.com/books/v1/volumes?q=" + book 
                                                              + " intitle:" + subject 
                                                              + "&orderBy=" + orderBy 
@@ -64,13 +69,15 @@ const AllBooksComponent = inject("displayMoreButtonStatusStore")(observer((props
         .then((data: any) => {  
                 console.log(data.data.items);  
                 setResult(data.data.items);
-                displayMoreButtonStatusStore?.triggerActive() 
+                displayMoreButtonStatusStore?.triggerActive();
+                loadingStatusStore?.triggerDisabled();
             }
         )  
     } 
 
-    function loadMore() { 
-        axios.get(
+    async function loadMore() { 
+        loadingStatusStore?.triggerActive(); 
+        await axios.get(
             "https://www.googleapis.com/books/v1/volumes?q=" + book 
                                                              + " intitle:" + subject 
                                                              + "&orderBy=" + orderBy 
@@ -81,12 +88,18 @@ const AllBooksComponent = inject("displayMoreButtonStatusStore")(observer((props
         .then((newData: any) => {  
                 console.log(newData.data.items); 
                 setResult(result => result.concat(newData.data.items));
+                loadingStatusStore?.triggerDisabled(); 
             }
         ) 
     }
 
     return (
-        <><form onSubmit={handleSubmit}>
+        <>
+        {loadingStatusStore?.loadingStatus === LoadingStatus.ON &&
+            <Loading/>
+        }
+       <>
+        <form onSubmit={handleSubmit}>
             <div className="main">
                 <div className="header">
                     <SearchBoxComponent
@@ -106,12 +119,11 @@ const AllBooksComponent = inject("displayMoreButtonStatusStore")(observer((props
                 </div>
             </div>
         </form>
-        {displayMoreButtonStatusStore?.displayMoreButtonStatus === DisplayMoreButtonStatus.DISPLAY &&
-            <div className="displayMoreButton">
-                <input className="displayMoreButtonContent" onClick={loadMore} type="submit" value="LoadMOre" />
-            </div>
-        }
-        </>
+            {displayMoreButtonStatusStore?.displayMoreButtonStatus === DisplayMoreButtonStatus.DISPLAY &&
+                <div className="displayMoreButton">
+                    <input className="displayMoreButtonContent" onClick={loadMore} type="submit" value="LoadMOre" />
+                </div>}
+        </></>
     )  
 }))
   
