@@ -10,7 +10,6 @@ import App from './App';
 import "./CSS/App.css"
 import './CSS/index.css';
 
-
 declare global {
   interface Window { rootState: any; }
 }
