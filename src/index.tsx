@@ -1,14 +1,15 @@
 import { Provider } from 'mobx-react';
 import { BrowserRouter } from 'react-router-dom';
-import React from 'react';
 import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { RootStore } from './stores/RootStore';
 
+import App from './App';
+
+import "./CSS/App.css"
 import './CSS/index.css';
-import App from './Components/App';
+
 
 declare global {
   interface Window { rootState: any; }

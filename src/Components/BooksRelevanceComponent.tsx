@@ -10,10 +10,13 @@ export default class BooksRelevanceComponent extends Component<BooksRelevanceCom
         const { handleSort } = this.props;
 
         return(
-            <select onChange={handleSort}>
-                <option value="RELEVANCE">RELEVANCE</option>
-                <option value="NEWEST">NEW</option>
-            </select>        
+            <div className="SelectContent">
+               <select onChange={handleSort}>
+                    <option value="RELEVANCE">RELEVANCE</option>
+                    <option value="NEWEST">NEW</option>
+                </select> 
+            </div>
+                    
         )
     }
 }

@@ -1,14 +1,28 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from "react";  
 import { inject, observer } from 'mobx-react';
 import axios from 'axios';  
+
+import BookIsOpenStatusStore from "../stores/BookIsOpenStatusStore";
+
 import SearchBoxComponent from "./SearchBoxComponent";
 import BookBodyComponent from "./BookBodyComponent";
-import BookIsOpenStatusStore from "../stores/BookIsOpenStatusStore";
-import "../CSS/App.css"
+
+interface BookItems { 
+    volumeInfo: { 
+        imageLinks: { 
+            thumbnail: string; 
+        };
+        previewLink: string; 
+        title: string; 
+        authors: string;
+        publishedDate: string;
+    }; 
+    
+}
 
 interface AllBooksComponentProps {
     bookIsOpenStatusStore?: BookIsOpenStatusStore;
+    bookRes?: Array<BookItems>;
 }
 
 const AllBooksComponent = inject("bookIsOpenStatusStore")(observer((props:AllBooksComponentProps) => {  
@@ -17,7 +31,7 @@ const AllBooksComponent = inject("bookIsOpenStatusStore")(observer((props:AllBoo
     const apiKey ="AIzaSyCfaJ5T7gi_odqHGnJHAIjMSK1HjWJn7_Q";
     const [subject, setSubject] = useState("ALL");
     const [orderBy, setOrderBy] = useState("RELEVANCE");
-    const maxResult = 40;
+    const maxResult = 4;
     const startIndex = 0;
     const { bookIsOpenStatusStore } = props;
 
@@ -38,40 +52,48 @@ const AllBooksComponent = inject("bookIsOpenStatusStore")(observer((props:AllBoo
 
     function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) {  
         event.preventDefault();
-        axios.get("https://www.googleapis.com/books/v1/volumes?q=" + book + " intitle:" + subject + "&orderBy=" + orderBy + "&key=" + apiKey + "&startIndex=" + startIndex + "&maxResults=" + maxResult) 
-            .then((data: any) => {  
+        axios.get(
+            "https://www.googleapis.com/books/v1/volumes?q=" + book 
+                                                             + " intitle:" + subject 
+                                                             + "&orderBy=" + orderBy 
+                                                             + "&key=" + apiKey 
+                                                             + "&startIndex=" + startIndex 
+                                                             + "&maxResults=" + maxResult
+        )
+        .then((data: any) => {  
                 console.log(data.data.items);  
-                setResult(data.data.items);  
-            })  
-    }  
+                setResult(data.data.items); 
+            }
+        )  
+    } 
+
+    function loadMore() { 
+    }
 
     return (
-        <div>
-        {
-            // bookIsOpenStatusStore?.booksIsOpenStatus === BooksIsOpenStatus.CLOSED ?
-            <form onSubmit={handleSubmit}>
-                <div className="main">
-                    <div className="header">
-                        <SearchBoxComponent
-                            handleChange={handleChange}
-                            handleSubject={handleSubject}
-                            handleSort={handleSort}
-                        />
+        <form onSubmit={handleSubmit}>
+            <div className="main">
+                <div className="header">
+                    <SearchBoxComponent
+                        handleChange={handleChange}
+                        handleSubject={handleSubject}
+                        handleSort={handleSort}
+                    />
+                </div>
+                <div className="content">
+                    <div className="container">  
+                        {result.map(book => (
+                            <BookBodyComponent
+                                bookRes={book}
+                                onClick={bookIsOpenStatusStore?.triggerActive}
+                            />
+                        ))} 
                     </div>
-                    <div className="content">
-                        <BookBodyComponent
-                            result={result}
-                            onClick={bookIsOpenStatusStore?.triggerActive}
-                        />
-                    </div>   
-                </div>                
-            </form> 
-            // :
-            // bookIsOpenStatusStore?.booksIsOpenStatus === BooksIsOpenStatus.OPENED ?
-                // <div onClick={bookIsOpenStatusStore.triggerDisabled}>s</div>
-            // : ""
-        }</div>
- 
+                    {/* if container not emty, render footer */}
+                    {/* <div className="footer" onClick={loadMore}>dd</div> */}
+                </div>  
+            </div>                
+        </form> 
     )  
 }))
   
