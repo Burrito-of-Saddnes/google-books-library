@@ -58,11 +58,11 @@ const AllBooksComponent = inject("displayMoreButtonStatusStore")(observer((props
                                                              + " intitle:" + subject 
                                                              + "&orderBy=" + orderBy 
                                                              + "&key=" + apiKey 
-                                                             + "&startIndex=" + startIndex 
+                                                             + "&startIndex=" + startIndex
                                                              + "&maxResults=" + maxResult
         )
         .then((data: any) => {  
-                // console.log(data.data.items);  
+                console.log(data.data.items);  
                 setResult(data.data.items);
                 displayMoreButtonStatusStore?.triggerActive() 
             }
@@ -75,10 +75,11 @@ const AllBooksComponent = inject("displayMoreButtonStatusStore")(observer((props
                                                              + " intitle:" + subject 
                                                              + "&orderBy=" + orderBy 
                                                              + "&key=" + apiKey 
-                                                             + "&startIndex=" + startIndex 
+                                                             + "&startIndex=" + (startIndex+result.length-1)
                                                              + "&maxResults=" + maxResult
         )
         .then((newData: any) => {  
+                console.log(newData.data.items); 
                 setResult(result => result.concat(newData.data.items));
             }
         ) 
