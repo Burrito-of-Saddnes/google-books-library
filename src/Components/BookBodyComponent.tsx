@@ -2,22 +2,18 @@ import React, { Component } from 'react';
 
 interface BookBodyComponentProps {
     bookRes: any;
-    onClick?: () => void;
 }
 
 export default class BookBodyComponent extends Component<BookBodyComponentProps, {}> {
     render(){
 
-        const { bookRes, onClick } = this.props;
+        const { bookRes } = this.props;
 
         return(
             <div 
                 className="booksCol"
             >
-                <img 
-                    onClick={e => {
-                        onClick && onClick()
-                    }}
+                <img
                     src={bookRes.volumeInfo.imageLinks !== undefined ? bookRes.volumeInfo.imageLinks.thumbnail : ''} 
                     alt={bookRes.volumeInfo.title} 
                     className="bookImg"

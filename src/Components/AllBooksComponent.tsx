@@ -98,7 +98,6 @@ const AllBooksComponent = inject("displayMoreButtonStatusStore", "loadingStatusS
         {loadingStatusStore?.loadingStatus === LoadingStatus.ON &&
             <Loading/>
         }
-       <>
         <form onSubmit={handleSubmit}>
             <div className="main">
                 <div className="header">
@@ -112,7 +111,7 @@ const AllBooksComponent = inject("displayMoreButtonStatusStore", "loadingStatusS
                         {result.map(book => (
                             <BookBodyComponent
                                 bookRes={book}
-                                onClick={displayMoreButtonStatusStore?.triggerActive} />
+                            />
                         ))}
                     </div>
 
@@ -122,8 +121,9 @@ const AllBooksComponent = inject("displayMoreButtonStatusStore", "loadingStatusS
             {displayMoreButtonStatusStore?.displayMoreButtonStatus === DisplayMoreButtonStatus.DISPLAY &&
                 <div className="displayMoreButton">
                     <input className="displayMoreButtonContent" onClick={loadMore} type="submit" value="LoadMOre" />
-                </div>}
-        </></>
+                </div>
+            }
+        </>
     )  
 }))
   
