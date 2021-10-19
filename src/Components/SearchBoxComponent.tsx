@@ -5,8 +5,8 @@ import BooksSubjectComponent from './BooksSubjectComponent';
 
 interface SearchBoxComponentProps {
     handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    handleSort?: (event: any) => void;
-    handleSubject?: (event: any) => void;
+    handleSort?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    handleSubject?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default class SearchBoxComponent extends Component<SearchBoxComponentProps, {}> {

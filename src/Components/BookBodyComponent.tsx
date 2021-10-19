@@ -1,20 +1,14 @@
 import React, { Component } from 'react';
-import { inject, observer } from 'mobx-react';
-
-import BookIsOpenStatusStore from "../stores/BookIsOpenStatusStore";
 
 interface BookBodyComponentProps {
     bookRes: any;
-    bookIsOpenStatusStore?: BookIsOpenStatusStore
-    onClick?: () => any;
+    onClick?: () => void;
 }
 
-@inject("bookIsOpenStatusStore")
-@observer
 export default class BookBodyComponent extends Component<BookBodyComponentProps, {}> {
     render(){
 
-        const { bookRes, onClick, bookIsOpenStatusStore } = this.props;
+        const { bookRes, onClick } = this.props;
 
         return(
             <div 
@@ -31,7 +25,7 @@ export default class BookBodyComponent extends Component<BookBodyComponentProps,
                 <p>{bookRes.volumeInfo.title}</p>
                 <p>Author: {bookRes.volumeInfo.authors}</p>
                 <p>Published: {bookRes.volumeInfo.publishedDate}</p>
-                <p>{bookIsOpenStatusStore?.booksIsOpenStatus}</p>
+                <a href={bookRes.volumeInfo.previewLink}>Know more</a>
             </div>
         );
     }

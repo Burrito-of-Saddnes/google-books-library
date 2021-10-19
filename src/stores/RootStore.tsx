@@ -1,11 +1,11 @@
-import BookIsOpenStatusStore from "./BookIsOpenStatusStore"
+import DisplayMoreButtonStatusStore from "./DisplayMoreButtonStatusStore"
 
 export class RootStore {
 
-    bookIsOpenStatusStore: BookIsOpenStatusStore;
+    displayMoreButtonStatusStore: DisplayMoreButtonStatusStore;
 
     constructor() {
-        this.bookIsOpenStatusStore = new BookIsOpenStatusStore();
+        this.displayMoreButtonStatusStore = new DisplayMoreButtonStatusStore();
     }
 
 }

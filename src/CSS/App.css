@@ -104,6 +104,17 @@ select {
   }
 }
 
+.displayMoreButton {
+  margin: 1em;
+  height: 2em;
+  text-align: center;
+}
+
+.displayMoreButtonContent {
+  height: 100%;
+  text-align: center;
+}
+
 .searchButtonContent {
   height: 100%;
 }
